@@ -21,12 +21,12 @@ include = [
 ]
 
 [dependencies]
-embedded-hal = "=1.0.0-alpha.8"
+embedded-hal = "1.0.0"
 
 [dev-dependencies]
-linux-embedded-hal = "=0.4.0-alpha.3"
-embedded-hal-mock = { git = "https://github.com/dbrgn/embedded-hal-mock", branch="1-alpha" }
-dummy-pin = "=0.2.0-alpha.1"
+linux-embedded-hal = "0.4.0"
+embedded-hal-mock = "0.10.0"
+dummy-pin = "1.0.0"
 
 [profile.release]
 lto = true

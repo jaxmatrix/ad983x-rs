@@ -1,11 +1,10 @@
-use embedded_hal::spi::blocking::{SpiBus, SpiDevice};
+use embedded_hal::spi::SpiDevice;
 
 use crate::{marker, Ad983x, BitFlags, ControlSource, Error, OutputWaveform, SignBitOutput};
 
 impl<DEV, E> Ad983x<DEV, marker::Ad9834Ad9838>
 where
     DEV: SpiDevice<Error = E>,
-    DEV::Bus: SpiBus,
 {
     /// Create a new instance of an AD9834 device.
     /// Remember to call `reset()` before using the device after power up.

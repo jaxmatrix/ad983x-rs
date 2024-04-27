@@ -1,4 +1,4 @@
-use embedded_hal::spi::blocking::{SpiBus, SpiDevice};
+use embedded_hal::spi::SpiDevice;
 
 use crate::{Ad983x, BitFlags, Config, Error, FrequencyRegister, PhaseRegister, PoweredDown};
 use core::marker::PhantomData;
@@ -54,7 +54,6 @@ impl<DEV, IC> Ad983x<DEV, IC> {
 impl<DEV, IC, E> Ad983x<DEV, IC>
 where
     DEV: SpiDevice<Error = E>,
-    DEV::Bus: SpiBus,
 {
     /// Resets the internal registers and leaves the device disabled.
     ///

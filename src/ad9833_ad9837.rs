@@ -1,11 +1,10 @@
-use embedded_hal::spi::blocking::{SpiBus, SpiDevice};
+use embedded_hal::spi::SpiDevice;
 
 use crate::{marker, Ad983x, BitFlags, Error, OutputWaveform};
 
 impl<DEV, E> Ad983x<DEV, marker::Ad9833Ad9837>
 where
     DEV: SpiDevice<Error = E>,
-    DEV::Bus: SpiBus,
 {
     /// Create a new instance of an AD9833 device.
     ///
