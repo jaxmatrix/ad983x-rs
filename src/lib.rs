@@ -283,9 +283,9 @@ pub const MODE: Mode = MODE_2;
 #[doc(hidden)]
 pub mod marker {
     /// AD9833/AD9837 device
-    pub enum Ad9833Ad9837 {}
+    pub struct Ad9833Ad9837(());
     /// AD9834/AD9838 device
-    pub enum Ad9834Ad9838 {}
+    pub struct Ad9834Ad9838(());
 }
 
 struct BitFlags;
@@ -306,11 +306,3 @@ pub struct Ad983x<DEV, IC> {
 mod ad9833_ad9837;
 mod ad9834_ad9838;
 mod common;
-
-mod private {
-    use super::marker;
-    pub trait Sealed {}
-
-    impl Sealed for marker::Ad9833Ad9837 {}
-    impl Sealed for marker::Ad9834Ad9838 {}
-}
