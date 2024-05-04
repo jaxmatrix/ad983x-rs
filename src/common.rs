@@ -136,7 +136,7 @@ where
             .with_high(BitFlags::HLB);
         self.write_control_if_different(control)?;
         let reg = Self::get_freq_register_bits(register);
-        self.write(reg | value as u16)
+        self.write(reg | value)
     }
 
     /// Set the frequency 14-bit LSBs
@@ -152,7 +152,7 @@ where
         let control = self.control.with_low(BitFlags::B28).with_low(BitFlags::HLB);
         self.write_control_if_different(control)?;
         let reg = Self::get_freq_register_bits(register);
-        self.write(reg | value as u16)
+        self.write(reg | value)
     }
 
     /// Select the frequency register that is used
