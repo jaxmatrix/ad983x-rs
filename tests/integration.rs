@@ -2,7 +2,7 @@ use ad983x::{
     ControlSource, FrequencyRegister as FreqReg, OutputWaveform as OW, PhaseRegister as PhaseReg,
     PoweredDown as PD, SignBitOutput as SBO,
 };
-use embedded_hal_mock::spi::Transaction as SpiTrans;
+use embedded_hal_mock::eh1::spi::Transaction as SpiTrans;
 
 mod base;
 use crate::base::{destroy, new_ad9833, new_ad9834, new_ad9837, new_ad9838, BitFlags as BF};

@@ -82,12 +82,12 @@
 //!
 //! ```no_run
 //! use ad983x::{Ad983x, FrequencyRegister};
-//! use embedded_hal::spi::blocking::ExclusiveDevice;
-//! use linux_embedded_hal::{SysfsPin, Spidev};
+//! use embedded_hal_bus::spi::ExclusiveDevice;
+//! use linux_embedded_hal::{Delay, SpidevBus, SysfsPin};
 //!
-//! let spi = Spidev::open("/dev/spidev0.0").unwrap();
+//! let spi = SpidevBus::open("/dev/spidev0.0").unwrap();
 //! let chip_select = SysfsPin::new(25);
-//! let dev = ExclusiveDevice::new(spi, chip_select);
+//! let dev = ExclusiveDevice::new(spi, chip_select, Delay);
 //! let mut dds = Ad983x::new_ad9833(dev);
 //! dds.reset().unwrap(); // reset is necessary before operation
 //! dds.set_frequency(FrequencyRegister::F0, 4724).unwrap();
@@ -106,12 +106,12 @@
 //!
 //! ```no_run
 //! use ad983x::{Ad983x, FrequencyRegister};
-//! use embedded_hal::spi::blocking::ExclusiveDevice;
-//! use linux_embedded_hal::{SysfsPin, Spidev};
+//! use embedded_hal_bus::spi::ExclusiveDevice;
+//! use linux_embedded_hal::{Delay, SpidevBus, SysfsPin};
 //!
-//! let spi = Spidev::open("/dev/spidev0.0").unwrap();
+//! let spi = SpidevBus::open("/dev/spidev0.0").unwrap();
 //! let chip_select = SysfsPin::new(25);
-//! let dev = ExclusiveDevice::new(spi, chip_select);
+//! let dev = ExclusiveDevice::new(spi, chip_select, Delay);
 //! let mut dds = Ad983x::new_ad9833(dev);
 //! dds.reset().unwrap(); // reset is necessary before operation
 //! // A4 tone for a 25 MHz clock
@@ -131,12 +131,12 @@
 //!
 //! ```no_run
 //! use ad983x::{Ad983x, PhaseRegister};
-//! use embedded_hal::spi::blocking::ExclusiveDevice;
-//! use linux_embedded_hal::{SysfsPin, Spidev};
+//! use embedded_hal_bus::spi::ExclusiveDevice;
+//! use linux_embedded_hal::{Delay, SpidevBus, SysfsPin};
 //!
-//! let spi = Spidev::open("/dev/spidev0.0").unwrap();
+//! let spi = SpidevBus::open("/dev/spidev0.0").unwrap();
 //! let chip_select = SysfsPin::new(25);
-//! let dev = ExclusiveDevice::new(spi, chip_select);
+//! let dev = ExclusiveDevice::new(spi, chip_select, Delay);
 //! let mut dds = Ad983x::new_ad9833(dev);
 //! dds.reset().unwrap(); // reset is necessary before operation
 //! dds.set_phase(PhaseRegister::P1, 4724).unwrap();
@@ -147,12 +147,12 @@
 //!
 //! ```no_run
 //! use ad983x::{Ad983x, OutputWaveform};
-//! use embedded_hal::spi::blocking::ExclusiveDevice;
-//! use linux_embedded_hal::{SysfsPin, Spidev};
+//! use embedded_hal_bus::spi::ExclusiveDevice;
+//! use linux_embedded_hal::{Delay, SpidevBus, SysfsPin};
 //!
-//! let spi = Spidev::open("/dev/spidev0.0").unwrap();
+//! let spi = SpidevBus::open("/dev/spidev0.0").unwrap();
 //! let chip_select = SysfsPin::new(25);
-//! let dev = ExclusiveDevice::new(spi, chip_select);
+//! let dev = ExclusiveDevice::new(spi, chip_select, Delay);
 //! let mut dds = Ad983x::new_ad9833(dev);
 //! dds.reset().unwrap(); // reset is necessary before operation
 //! dds.set_output_waveform(OutputWaveform::Triangle).unwrap();
@@ -162,12 +162,12 @@
 //!
 //! ```no_run
 //! use ad983x::{Ad983x, PoweredDown};
-//! use embedded_hal::spi::blocking::ExclusiveDevice;
-//! use linux_embedded_hal::{SysfsPin, Spidev};
+//! use embedded_hal_bus::spi::ExclusiveDevice;
+//! use linux_embedded_hal::{Delay, SpidevBus, SysfsPin};
 //!
-//! let spi = Spidev::open("/dev/spidev0.0").unwrap();
+//! let spi = SpidevBus::open("/dev/spidev0.0").unwrap();
 //! let chip_select = SysfsPin::new(25);
-//! let dev = ExclusiveDevice::new(spi, chip_select);
+//! let dev = ExclusiveDevice::new(spi, chip_select, Delay);
 //! let mut dds = Ad983x::new_ad9833(dev);
 //! dds.reset().unwrap(); // reset is necessary before operation
 //! dds.set_powered_down(PoweredDown::Dac).unwrap();
@@ -177,12 +177,12 @@
 //!
 //! ```no_run
 //! use ad983x::{Ad983x, ControlSource};
-//! use embedded_hal::spi::blocking::ExclusiveDevice;
-//! use linux_embedded_hal::{SysfsPin, Spidev};
+//! use embedded_hal_bus::spi::ExclusiveDevice;
+//! use linux_embedded_hal::{Delay, SpidevBus, SysfsPin};
 //!
-//! let spi = Spidev::open("/dev/spidev0.0").unwrap();
+//! let spi = SpidevBus::open("/dev/spidev0.0").unwrap();
 //! let chip_select = SysfsPin::new(25);
-//! let dev = ExclusiveDevice::new(spi, chip_select);
+//! let dev = ExclusiveDevice::new(spi, chip_select, Delay);
 //! let mut dds = Ad983x::new_ad9838(dev);
 //! dds.reset().unwrap(); // reset is necessary before operation
 //! dds.set_control_source(ControlSource::HardwarePins).unwrap();

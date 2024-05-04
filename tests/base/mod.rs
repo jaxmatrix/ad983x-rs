@@ -1,5 +1,5 @@
 use ad983x::{marker, Ad983x};
-use embedded_hal_mock::spi::{Mock as SpiMock, Transaction as SpiTrans};
+use embedded_hal_mock::eh1::spi::{Mock as SpiMock, Transaction as SpiTrans};
 
 pub struct BitFlags;
 impl BitFlags {
@@ -22,8 +22,8 @@ impl BitFlags {
     pub const FREQ1: u8 = 1 << 7;
 }
 
-pub fn new_ad9833(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9833Ad9837> {
-    let wrapped: Vec<SpiTrans> = transactions
+pub fn new_ad9833(transactions: &[SpiTrans<u8>]) -> Ad983x<SpiMock<u8>, marker::Ad9833Ad9837> {
+    let wrapped: Vec<SpiTrans<u8>> = transactions
         .iter()
         .flat_map(|trans| {
             [
@@ -33,11 +33,11 @@ pub fn new_ad9833(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9833Ad
             ]
         })
         .collect();
-    Ad983x::new_ad9833(SpiMock::new(wrapped.iter()))
+    Ad983x::new_ad9833(SpiMock::new(&wrapped))
 }
 
-pub fn new_ad9834(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9834Ad9838> {
-    let wrapped: Vec<SpiTrans> = transactions
+pub fn new_ad9834(transactions: &[SpiTrans<u8>]) -> Ad983x<SpiMock<u8>, marker::Ad9834Ad9838> {
+    let wrapped: Vec<SpiTrans<u8>> = transactions
         .iter()
         .flat_map(|trans| {
             [
@@ -47,11 +47,11 @@ pub fn new_ad9834(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9834Ad
             ]
         })
         .collect();
-    Ad983x::new_ad9834(SpiMock::new(wrapped.iter()))
+    Ad983x::new_ad9834(SpiMock::new(&wrapped))
 }
 
-pub fn new_ad9837(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9833Ad9837> {
-    let wrapped: Vec<SpiTrans> = transactions
+pub fn new_ad9837(transactions: &[SpiTrans<u8>]) -> Ad983x<SpiMock<u8>, marker::Ad9833Ad9837> {
+    let wrapped: Vec<SpiTrans<u8>> = transactions
         .iter()
         .flat_map(|trans| {
             [
@@ -61,11 +61,11 @@ pub fn new_ad9837(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9833Ad
             ]
         })
         .collect();
-    Ad983x::new_ad9837(SpiMock::new(wrapped.iter()))
+    Ad983x::new_ad9837(SpiMock::new(&wrapped))
 }
 
-pub fn new_ad9838(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9834Ad9838> {
-    let wrapped: Vec<SpiTrans> = transactions
+pub fn new_ad9838(transactions: &[SpiTrans<u8>]) -> Ad983x<SpiMock<u8>, marker::Ad9834Ad9838> {
+    let wrapped: Vec<SpiTrans<u8>> = transactions
         .iter()
         .flat_map(|trans| {
             [
@@ -75,9 +75,9 @@ pub fn new_ad9838(transactions: &[SpiTrans]) -> Ad983x<SpiMock, marker::Ad9834Ad
             ]
         })
         .collect();
-    Ad983x::new_ad9838(SpiMock::new(wrapped.iter()))
+    Ad983x::new_ad9838(SpiMock::new(&wrapped))
 }
 
-pub fn destroy<IC>(device: Ad983x<SpiMock, IC>) {
-    device.destroy().done();
+pub fn destroy<IC>(device: Ad983x<SpiMock<u8>, IC>) {
+    device.destroy().done()
 }
