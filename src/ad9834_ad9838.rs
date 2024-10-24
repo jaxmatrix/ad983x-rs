@@ -1,21 +1,25 @@
-use embedded_hal::spi::SpiDevice;
+use embedded_hal::{
+    digital::OutputPin,
+    spi::{SpiBus, SpiDevice},
+};
 
 use crate::{marker, Ad983x, BitFlags, ControlSource, Error, OutputWaveform, SignBitOutput};
 
-impl<DEV, E> Ad983x<DEV, marker::Ad9834Ad9838>
+impl<DEV, CS, E> Ad983x<DEV, CS, marker::Ad9834Ad9838>
 where
-    DEV: SpiDevice<Error = E>,
+    DEV: SpiBus<Error = E>,
+    CS: OutputPin<Error = E>,
 {
     /// Create a new instance of an AD9834 device.
     /// Remember to call `reset()` before using the device after power up.
-    pub fn new_ad9834(spi: DEV) -> Self {
-        Self::create(spi)
+    pub fn new_ad9834(spi: DEV, cs: CS) -> Self {
+        Self::create(spi, cs)
     }
 
     /// Create a new instance of an AD9838 device.
     /// Remember to call `reset()` before using the device after power up.
-    pub fn new_ad9838(spi: DEV) -> Self {
-        Self::create(spi)
+    pub fn new_ad9838(spi: DEV, cs: CS) -> Self {
+        Self::create(spi, cs)
     }
 
     /// Set the output waveform

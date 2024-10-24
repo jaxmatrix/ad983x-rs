@@ -1,6 +1,8 @@
-use embedded_hal::spi::SpiDevice;
+use embedded_hal::{digital::OutputPin, spi::SpiBus};
 
-use crate::{Ad983x, BitFlags, Config, Error, FrequencyRegister, PhaseRegister, PoweredDown};
+use crate::{
+    Ad983x, BitFlags, Config, DataFormat, Error, FrequencyRegister, PhaseRegister, PoweredDown,
+};
 use core::marker::PhantomData;
 
 impl Config {
@@ -34,10 +36,11 @@ impl BitFlags {
     pub(crate) const MODE: u16 = 1 << 1;
 }
 
-impl<DEV, IC> Ad983x<DEV, IC> {
-    pub(crate) fn create(spi: DEV) -> Self {
+impl<DEV, CS, IC> Ad983x<DEV, CS, IC> {
+    pub(crate) fn create(spi: DEV, cs: CS) -> Self {
         Ad983x {
             spi,
+            cs,
             control: Config {
                 bits: BitFlags::RESET,
             },
@@ -46,14 +49,15 @@ impl<DEV, IC> Ad983x<DEV, IC> {
     }
 
     /// Destroy driver instance, return SPI bus instance and CS output pin.
-    pub fn destroy(self) -> DEV {
-        self.spi
+    pub fn destroy(self) -> (DEV, CS) {
+        (self.spi, self.cs)
     }
 }
 
-impl<DEV, IC, E> Ad983x<DEV, IC>
+impl<DEV, CS, IC, E> Ad983x<DEV, CS, IC>
 where
-    DEV: SpiDevice<Error = E>,
+    DEV: SpiBus<Error = E>,
+    CS: OutputPin<Error = E>,
 {
     /// Resets the internal registers and leaves the device disabled.
     ///
@@ -105,11 +109,8 @@ where
         Self::check_value_fits(value, 28)?;
         let control = self.control.with_high(BitFlags::B28);
         self.write_control_if_different(control)?;
-        let lsb = value & ((1 << 14) - 1);
-        let msb = value >> 14;
         let reg = Self::get_freq_register_bits(register);
-        self.write(reg | lsb as u16)?;
-        self.write(reg | msb as u16)
+        self.write_data(reg, value)
     }
 
     fn get_freq_register_bits(register: FrequencyRegister) -> u16 {
@@ -135,7 +136,7 @@ where
             .with_high(BitFlags::HLB);
         self.write_control_if_different(control)?;
         let reg = Self::get_freq_register_bits(register);
-        self.write(reg | value)
+        self.write(DataFormat::U16(reg | value))
     }
 
     /// Set the frequency 14-bit LSBs
@@ -151,7 +152,7 @@ where
         let control = self.control.with_low(BitFlags::B28).with_low(BitFlags::HLB);
         self.write_control_if_different(control)?;
         let reg = Self::get_freq_register_bits(register);
-        self.write(reg | value)
+        self.write(DataFormat::U16(reg | value))
     }
 
     /// Select the frequency register that is used
@@ -176,7 +177,7 @@ where
             PhaseRegister::P0 => value,
             PhaseRegister::P1 => value | BitFlags::D13,
         };
-        self.write(value)
+        self.write(DataFormat::U16(value))
     }
 
     /// Select the phase register that is used.
@@ -227,14 +228,41 @@ where
 
     pub(crate) fn write_control(&mut self, control: Config) -> Result<(), Error<E>> {
         let payload = control.bits & 0b0011_1111_1111_1111;
-        self.write(payload)?;
+        self.write(DataFormat::U16(payload))?;
         self.control = control;
         Ok(())
     }
 
-    pub(crate) fn write(&mut self, payload: u16) -> Result<(), Error<E>> {
-        self.spi
-            .write(&[(payload >> 8) as u8, payload as u8])
-            .map_err(Error::Spi)
+    pub(crate) fn write(&mut self, payload: DataFormat) -> Result<(), Error<E>> {
+        self.cs.set_low().map_err(Error::CSPinError)?;
+        let error = match payload {
+            DataFormat::U32(data) => {
+                let d2s = data.to_be_bytes();
+                self.spi.write(&d2s).map_err(Error::Spi)
+            }
+            DataFormat::U16(data) => {
+                let d2s = data.to_be_bytes();
+                self.spi.write(&d2s).map_err(Error::Spi)
+            }
+            DataFormat::U8(data) => {
+                let d2s = data.to_be_bytes();
+                self.spi.write(&d2s).map_err(Error::Spi)
+            }
+        };
+        self.cs.set_high().map_err(Error::CSPinError)?;
+        error
+    }
+
+    pub(crate) fn write_data(&mut self, reg: u16, payload: u32) -> Result<(), Error<E>> {
+        self.cs.set_low().map_err(Error::CSPinError)?;
+        let mut msb = ((payload & 0x0FFFC000) >> 14) as u16;
+        msb = reg | msb;
+
+        let mut lsb = (payload & 0x00003FFF) as u16;
+        lsb = reg | lsb;
+        self.spi.write(&lsb.to_be_bytes()).map_err(Error::Spi)?;
+        self.spi.write(&msb.to_be_bytes()).map_err(Error::Spi)?;
+        self.cs.set_high().map_err(Error::CSPinError)?;
+        Ok(())
     }
 }

@@ -194,7 +194,21 @@
 #![no_std]
 
 use core::marker::PhantomData;
-use embedded_hal::spi::{Mode, MODE_2};
+use embedded_hal::{
+    digital::OutputPin,
+    spi::{Mode, MODE_2},
+};
+
+/// Possible data types that might be send via spi
+#[derive(Debug)]
+pub enum DataFormat {
+    /// For storing U32
+    U32(u32),
+    /// For storing U16
+    U16(u16),
+    /// For storing U8
+    U8(u8),
+}
 
 /// All possible errors in this crate
 #[derive(Debug)]
@@ -203,6 +217,8 @@ pub enum Error<E> {
     Spi(E),
     /// Invalid argument provided
     InvalidArgument,
+    /// CS Pin Error,
+    CSPinError(E),
 }
 
 /// Frequency registers
@@ -297,8 +313,9 @@ struct Config {
 
 /// AD983x direct digital synthesizer
 #[derive(Debug)]
-pub struct Ad983x<DEV, IC> {
+pub struct Ad983x<DEV, CS, IC> {
     spi: DEV,
+    cs: CS,
     control: Config,
     _ic: PhantomData<IC>,
 }
