@@ -194,10 +194,7 @@
 #![no_std]
 
 use core::marker::PhantomData;
-use embedded_hal::{
-    digital::OutputPin,
-    spi::{Mode, MODE_2},
-};
+use embedded_hal::spi::{Mode, MODE_2};
 
 /// Possible data types that might be send via spi
 #[derive(Debug)]

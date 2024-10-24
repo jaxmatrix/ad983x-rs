@@ -1,4 +1,4 @@
-use embedded_hal::{digital::OutputPin, spi::SpiBus};
+use embedded_hal::{digital::OutputPin, spi::SpiDevice};
 
 use crate::{
     Ad983x, BitFlags, Config, DataFormat, Error, FrequencyRegister, PhaseRegister, PoweredDown,
@@ -56,7 +56,7 @@ impl<DEV, CS, IC> Ad983x<DEV, CS, IC> {
 
 impl<DEV, CS, IC, E> Ad983x<DEV, CS, IC>
 where
-    DEV: SpiBus<Error = E>,
+    DEV: SpiDevice<Error = E>,
     CS: OutputPin<Error = E>,
 {
     /// Resets the internal registers and leaves the device disabled.

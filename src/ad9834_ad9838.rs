@@ -1,13 +1,10 @@
-use embedded_hal::{
-    digital::OutputPin,
-    spi::{SpiBus, SpiDevice},
-};
+use embedded_hal::{digital::OutputPin, spi::SpiDevice};
 
 use crate::{marker, Ad983x, BitFlags, ControlSource, Error, OutputWaveform, SignBitOutput};
 
 impl<DEV, CS, E> Ad983x<DEV, CS, marker::Ad9834Ad9838>
 where
-    DEV: SpiBus<Error = E>,
+    DEV: SpiDevice<Error = E>,
     CS: OutputPin<Error = E>,
 {
     /// Create a new instance of an AD9834 device.
