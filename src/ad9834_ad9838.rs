@@ -5,7 +5,7 @@ use crate::{marker, Ad983x, BitFlags, ControlSource, Error, OutputWaveform, Sign
 impl<DEV, CS, E> Ad983x<DEV, CS, marker::Ad9834Ad9838>
 where
     DEV: SpiDevice<Error = E>,
-    CS: OutputPin<Error = E>,
+    CS: OutputPin,
 {
     /// Create a new instance of an AD9834 device.
     /// Remember to call `reset()` before using the device after power up.

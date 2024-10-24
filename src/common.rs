@@ -57,7 +57,7 @@ impl<DEV, CS, IC> Ad983x<DEV, CS, IC> {
 impl<DEV, CS, IC, E> Ad983x<DEV, CS, IC>
 where
     DEV: SpiDevice<Error = E>,
-    CS: OutputPin<Error = E>,
+    CS: OutputPin,
 {
     /// Resets the internal registers and leaves the device disabled.
     ///
@@ -234,7 +234,7 @@ where
     }
 
     pub(crate) fn write(&mut self, payload: DataFormat) -> Result<(), Error<E>> {
-        self.cs.set_low().map_err(Error::CSPinError)?;
+        self.cs.set_low();
         let error = match payload {
             DataFormat::U32(data) => {
                 let d2s = data.to_be_bytes();
@@ -249,12 +249,12 @@ where
                 self.spi.write(&d2s).map_err(Error::Spi)
             }
         };
-        self.cs.set_high().map_err(Error::CSPinError)?;
+        self.cs.set_high();
         error
     }
 
     pub(crate) fn write_data(&mut self, reg: u16, payload: u32) -> Result<(), Error<E>> {
-        self.cs.set_low().map_err(Error::CSPinError)?;
+        self.cs.set_low();
         let mut msb = ((payload & 0x0FFFC000) >> 14) as u16;
         msb = reg | msb;
 
@@ -262,7 +262,7 @@ where
         lsb = reg | lsb;
         self.spi.write(&lsb.to_be_bytes()).map_err(Error::Spi)?;
         self.spi.write(&msb.to_be_bytes()).map_err(Error::Spi)?;
-        self.cs.set_high().map_err(Error::CSPinError)?;
+        self.cs.set_high();
         Ok(())
     }
 }
